@@ -1,4 +1,4 @@
-const https = require('http');
+const http = require('http');
 const { listen } = require('./app');
 // variable qui contient la requête http (package http)
 // require = commande pour importé un package
@@ -53,7 +53,7 @@ const errorHandler = error => {
     }
 };
 // Pour dire à l'application express sur quel port elle doit tournée
-const server = https.createServer(app)
+const server = http.createServer(app)
 // l'application express est une fonction qui contient la requête et la réponse 
 
 //server.listen(process.env.PORT || 3000);
