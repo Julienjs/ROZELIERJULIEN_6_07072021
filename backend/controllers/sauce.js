@@ -3,19 +3,18 @@ const fs = require('fs');
 
 
 exports.createSauce = (req, res, next) => {
-    //grace au middleware precedent maintenant nous avons accès au corps de la requête
     const sauceObject = JSON.parse(req.body.sauce);
-    delete sauceObject._id;//retire le champs id du corps de la requête
+    delete sauceObject._id; //retire le champs id du corps de la requête
     const sauce = new Sauce({
-        ...sauceObject,// spread(...) est un opérateur qui copie tout les élément de la requete body
+        ...sauceObject,
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     });
 
-    sauce.save()//method save enregistre l'objet dans la base et retourne la promise
+    sauce.save()
         .then(() => res.status(201).json({ message: 'Objet enregistré !' }))
         .catch(error => res.status(400).json({ error }));
 };
-//modifier objet
+//modifier sauce
 exports.modifySauce = (req, res, next) => {
     const sauceObject = req.file ?
         {
@@ -26,7 +25,8 @@ exports.modifySauce = (req, res, next) => {
         .then(() => res.status(200).json({ message: 'objet modifié !' }))
         .catch(error => res.status(400).json({ error }));
 };
-//supprimer objet
+
+//supprimer sauce
 exports.deleteSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => {
@@ -39,14 +39,14 @@ exports.deleteSauce = (req, res, next) => {
         })
         .catch(error => res.status(500).json({ error }));
 };
-//recuperer un seul objet
+//recuperer une sauce
 exports.getOneSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id })
-        //findOne pour trouver un objet 
         .then(sauce => res.status(200).json(sauce))
         .catch(error => res.status(404).json({ error }));
 };
-//recuperer tout les objets
+
+//recuperer toutes les sauces
 exports.getAllSauces = (req, res, next) => {
     Sauce.find()
         .then(sauces => res.status(200).json(sauces))
@@ -68,7 +68,6 @@ exports.likeDislike = (req, res, next) => {
                             choice = { $pull: { usersDisliked: userId }, $inc: { dislikes: -1 } };
                         };
                     };
-                    //let produitTrouve = panier.find(p => p._id == produit._id && p.color == produit.color);
                     for (let userId of sauce.usersLiked) {
                         if (req.body.userId === userId) {
                             choice = { $pull: { usersLiked: userId }, $inc: { likes: -1 } };
@@ -84,36 +83,5 @@ exports.likeDislike = (req, res, next) => {
         })
         .catch(error => res.status(500).json({ error }));
 };
-
-
-// exports.addLikes = (req, res, next) => {
-//     const like = req.body.like;
-//     const dislike = req.body.dislike;
-//     const userId = req.body.userId;
-
-//     Sauce.findOne({ _id: req.params.id })
-//         .then(sauce => {
-//             switch (like) {
-//                 case 1:
-//                     Sauce.updateOne(
-//                         { _id: req.params.id },
-//                         { $push: { userLiked: userId }, $inc: { likes: 1 } }
-//                     )
-//                         .then(() => res.status(200).json({ message: 'objet liké' }))
-//                         .catch(error => res.status(404).json({ error }));
-//                     break;
-//             }
-//             switch (dislike) {
-//                 case -1:
-//                     Sauce.updateOne(
-//                         { _id: req.params.id },
-//                         { $push: { userDisliked: userId }, $inc: { dislikes: 1 } }
-//                     )
-//                         .then(() => res.status(200).json({ message: 'objet pas aimé' }))
-//                         .catch(error => res.status(404).json({ error }));
-//                     break;
-//             }
-//         });
-// }
 
 

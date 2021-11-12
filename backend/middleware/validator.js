@@ -11,11 +11,10 @@ const rules = () => {
             .matches('[0-9]').withMessage('Le mot de passe doit contenir au moins un chiffre!')
             .matches('[A-Z]').withMessage('Le mot de passe doit contenir au moins une majuscules')
             .trim()//trim()supprime les caractères de l'entrée. Par défaut (sans paramètres), cette méthode supprime les espaces.
-            .escape()
+            .escape()    //escape()remplacera certains caractères (ie <, >, /, &, ', ") par l'entité HTML correspondante.
     ]
 }
 const validate = (req, res, next) => {
-    //escape()remplacera certains caractères (ie <, >, /, &, ', ") par l'entité HTML correspondante.
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.array() });
