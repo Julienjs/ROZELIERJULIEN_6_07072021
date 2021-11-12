@@ -36,7 +36,7 @@ const errorHandler = error => {
             throw error;
     }
 };
-// création d'un serveur HTTP
+// création d'un serveur http
 const server = http.createServer(app)
 
 server.on('error', errorHandler);
